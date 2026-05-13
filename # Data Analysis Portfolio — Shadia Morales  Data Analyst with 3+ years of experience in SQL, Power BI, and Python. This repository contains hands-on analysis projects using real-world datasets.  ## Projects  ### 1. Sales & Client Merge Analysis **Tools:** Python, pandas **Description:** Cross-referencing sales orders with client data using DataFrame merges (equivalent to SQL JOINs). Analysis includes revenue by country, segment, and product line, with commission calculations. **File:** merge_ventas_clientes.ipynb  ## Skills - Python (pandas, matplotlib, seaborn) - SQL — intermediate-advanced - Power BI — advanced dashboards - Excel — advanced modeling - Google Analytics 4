@@ -1,1 +1,221 @@
 
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# New Section"
+      ],
+      "metadata": {
+        "id": "zks7P9c_IbND"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "\n",
+        "# Tabla 1: ventas por orden\n",
+        "ventas = pd.DataFrame({\n",
+        "    \"orden_id\": [1, 2, 3, 4, 5],\n",
+        "    \"cliente_id\": [101, 102, 103, 101, 104],\n",
+        "    \"producto\": [\"Plan Basic\", \"Plan Pro\", \"Plan Basic\", \"Plan Pro\", \"Plan Enterprise\"],\n",
+        "    \"valor\": [500, 1200, 500, 1200, 3000],\n",
+        "    \"mes\": [\"Enero\", \"Enero\", \"Febrero\", \"Febrero\", \"Febrero\"]\n",
+        "})\n",
+        "\n",
+        "# Tabla 2: información de clientes\n",
+        "clientes = pd.DataFrame({\n",
+        "    \"cliente_id\": [101, 102, 103, 104],\n",
+        "    \"nombre\": [\"Acme Corp\", \"TechStart\", \"BlueSky\", \"NovaCo\"],\n",
+        "    \"pais\": [\"USA\", \"Canada\", \"USA\", \"Mexico\"],\n",
+        "    \"segmento\": [\"Enterprise\", \"SMB\", \"SMB\", \"Enterprise\"]\n",
+        "})\n",
+        "\n",
+        "print(\"=== Tabla ventas ===\")\n",
+        "print(ventas)\n",
+        "print(\"\\n=== Tabla clientes ===\")\n",
+        "print(clientes)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "P5PlZXMKIe6a",
+        "outputId": "781376b9-be12-44c3-ef9e-4945096fcb28"
+      },
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "=== Tabla ventas ===\n",
+            "   orden_id  cliente_id         producto  valor      mes\n",
+            "0         1         101       Plan Basic    500    Enero\n",
+            "1         2         102         Plan Pro   1200    Enero\n",
+            "2         3         103       Plan Basic    500  Febrero\n",
+            "3         4         101         Plan Pro   1200  Febrero\n",
+            "4         5         104  Plan Enterprise   3000  Febrero\n",
+            "\n",
+            "=== Tabla clientes ===\n",
+            "   cliente_id     nombre    pais    segmento\n",
+            "0         101  Acme Corp     USA  Enterprise\n",
+            "1         102  TechStart  Canada         SMB\n",
+            "2         103    BlueSky     USA         SMB\n",
+            "3         104     NovaCo  Mexico  Enterprise\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# INNER JOIN — solo los que coinciden en ambas tablas\n",
+        "inner = pd.merge(ventas, clientes, on=\"cliente_id\", how=\"inner\")\n",
+        "print(\"\\n=== INNER JOIN ===\")\n",
+        "print(inner)\n",
+        "\n",
+        "# LEFT JOIN — todos los de ventas, aunque no tengan cliente\n",
+        "left = pd.merge(ventas, clientes, on=\"cliente_id\", how=\"left\")\n",
+        "print(\"\\n=== LEFT JOIN ===\")\n",
+        "print(left)\n",
+        "\n",
+        "# Ahora analiza el resultado combinado\n",
+        "print(\"\\n=== Ventas por país ===\")\n",
+        "print(inner.groupby(\"pais\")[\"valor\"].sum())\n",
+        "\n",
+        "print(\"\\n=== Ventas por segmento ===\")\n",
+        "print(inner.groupby(\"segmento\")[\"valor\"].agg([\"sum\", \"count\", \"mean\"]).round(2))\n",
+        "\n",
+        "print(\"\\n=== Producto más vendido por país ===\")\n",
+        "print(inner.groupby([\"pais\", \"producto\"])[\"valor\"].sum().reset_index())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Jdt1musfIpwP",
+        "outputId": "6589552b-fa46-4663-d825-48653c84923a"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\n",
+            "=== INNER JOIN ===\n",
+            "   orden_id  cliente_id         producto  valor      mes     nombre    pais  \\\n",
+            "0         1         101       Plan Basic    500    Enero  Acme Corp     USA   \n",
+            "1         2         102         Plan Pro   1200    Enero  TechStart  Canada   \n",
+            "2         3         103       Plan Basic    500  Febrero    BlueSky     USA   \n",
+            "3         4         101         Plan Pro   1200  Febrero  Acme Corp     USA   \n",
+            "4         5         104  Plan Enterprise   3000  Febrero     NovaCo  Mexico   \n",
+            "\n",
+            "     segmento  \n",
+            "0  Enterprise  \n",
+            "1         SMB  \n",
+            "2         SMB  \n",
+            "3  Enterprise  \n",
+            "4  Enterprise  \n",
+            "\n",
+            "=== LEFT JOIN ===\n",
+            "   orden_id  cliente_id         producto  valor      mes     nombre    pais  \\\n",
+            "0         1         101       Plan Basic    500    Enero  Acme Corp     USA   \n",
+            "1         2         102         Plan Pro   1200    Enero  TechStart  Canada   \n",
+            "2         3         103       Plan Basic    500  Febrero    BlueSky     USA   \n",
+            "3         4         101         Plan Pro   1200  Febrero  Acme Corp     USA   \n",
+            "4         5         104  Plan Enterprise   3000  Febrero     NovaCo  Mexico   \n",
+            "\n",
+            "     segmento  \n",
+            "0  Enterprise  \n",
+            "1         SMB  \n",
+            "2         SMB  \n",
+            "3  Enterprise  \n",
+            "4  Enterprise  \n",
+            "\n",
+            "=== Ventas por país ===\n",
+            "pais\n",
+            "Canada    1200\n",
+            "Mexico    3000\n",
+            "USA       2200\n",
+            "Name: valor, dtype: int64\n",
+            "\n",
+            "=== Ventas por segmento ===\n",
+            "             sum  count     mean\n",
+            "segmento                        \n",
+            "Enterprise  4700      3  1566.67\n",
+            "SMB         1700      2   850.00\n",
+            "\n",
+            "=== Producto más vendido por país ===\n",
+            "     pais         producto  valor\n",
+            "0  Canada         Plan Pro   1200\n",
+            "1  Mexico  Plan Enterprise   3000\n",
+            "2     USA       Plan Basic   1000\n",
+            "3     USA         Plan Pro   1200\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Calcular comisión del 8% por venta\n",
+        "inner[\"comision\"] = (inner[\"valor\"] * 0.08).round(2)\n",
+        "\n",
+        "# Total por cliente\n",
+        "resumen = inner.groupby(\"nombre\").agg(\n",
+        "    total_ventas=(\"valor\", \"sum\"),\n",
+        "    num_ordenes=(\"orden_id\", \"count\"),\n",
+        "    comision_total=(\"comision\", \"sum\")\n",
+        ").reset_index()\n",
+        "\n",
+        "print(\"\\n=== Resumen por cliente ===\")\n",
+        "print(resumen)\n",
+        "\n",
+        "# Guardar resultado como CSV\n",
+        "resumen.to_csv(\"resumen_clientes.csv\", index=False)\n",
+        "print(\"\\nArchivo guardado: resumen_clientes.csv\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3Sg2eJLUJCaW",
+        "outputId": "6f01a905-5d5f-4703-b0f5-4780d7db051d"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\n",
+            "=== Resumen por cliente ===\n",
+            "      nombre  total_ventas  num_ordenes  comision_total\n",
+            "0  Acme Corp          1700            2           136.0\n",
+            "1    BlueSky           500            1            40.0\n",
+            "2     NovaCo          3000            1           240.0\n",
+            "3  TechStart          1200            1            96.0\n",
+            "\n",
+            "Archivo guardado: resumen_clientes.csv\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Welcome To Colab",
+      "toc_visible": true,
+      "provenance": []
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
