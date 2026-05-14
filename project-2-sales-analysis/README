@@ -1,1 +1,23 @@
+# Project 2 — Sales Performance Analysis
 
+**Tools:** Python, pandas, matplotlib, seaborn
+**Dataset:** Sample Sales Data (Kaggle)
+**Records analyzed:** 2,800+ orders across 19 countries
+
+## What I analyzed
+- Revenue trends by year and month
+- Performance by product line and country
+- Order size distribution
+- Key business insights and recommendations
+
+## Key findings
+1. Classic Cars drives the highest revenue across all product lines
+2. USA accounts for the majority of sales — international
+   markets represent a growth opportunity
+3. Q4 is consistently the strongest quarter — seasonal pattern
+   with strategic implications for inventory and sales planning
+
+## Files
+- `sales_analysis.ipynb` — full analysis notebook
+- `sales_dashboard.png` — 4-panel dashboard
+- `monthly_trend.png` — monthly revenue trend chart
